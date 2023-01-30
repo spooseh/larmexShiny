@@ -1,0 +1,30 @@
+Package: LARMExApp
+Title: Intraindividual Dynamic Network of Affects: Linear Autoregressive
+    Mixed-Effects Models for Ecological Momentary Assessment
+Version: 0.1.0
+Authors@R: 
+    person("Shakoor", "Pooseh", , "Shakoor.Pooseh@fdm.uni-freiburg.de", role = c("cre", "aut"))
+Description: LARMExApp is a Shiny application to construct dynamic
+    networks from ecological momentary assessments which are usually
+    collected through questionaires during several days. The individual
+    networks are the result of fitting vector autoregressive mixed-effects
+    models to sigle-subject data
+License: MIT + file LICENSE
+URL: github.com/spooseh/LARMExApp
+BugReports: github.com/spooseh/LARMExApp/issues
+Imports: 
+    lmerTest,
+    R6,
+    rmarkdown,
+    shinycssloaders,
+    shinydashboard,
+    shinyFiles,
+    shinyMatrix,
+Suggests: 
+    knitr,
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+RoxygenNote: 7.2.3

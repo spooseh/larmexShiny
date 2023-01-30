@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+<title>rmdMathSum.knit</title>
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+<!-- tabsets -->
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+</head>
+<body>
+<div class="container-fluid main-container">
+<div id="section-header">
+</div>
+
+<div id="section-a-brief-introduction-to-the-mathematical-formulation"
+class="section level3">
+<h3>A brief introduction to the mathematical formulation</h3>
+<p>
+  Let <span class="math inline">\(m_{i,t}=[m_1,m_2]^T_{i,t}\)</span> be
+  the <span class="math inline">\(2 \times 1\)</span> vector corresponding
+  to the mood values from the <span class="math inline">\(i\)</span>th day
+  at any observation occasion <span
+  class="math inline">\(t=1,2,\ldots,n_i\)</span> where <span
+  class="math inline">\(n_i\)</span> is the number of observations per day
+  and <span class="math inline">\(T\)</span> denotes the transpose of a
+  matrix.
+</p>
+<p>
+  Assuming that a collection of stressors (e) act on mood nodes and
+  their effect could vary between days, the evolution of <span
+  class="math inline">\(m_i\)</span> is represented by an exogenous Linear
+  Autoregressive Mixed-Effects model (LARMEx) as <span
+  class="math display">\[ m_{i,t} = (\beta^{ar}+b^{ar}_i)m_{i,t-1}
+  +(\beta^e+b^e_i)e_{i,t}  + (\beta^c+b^c_i) +
+  \epsilon_{i,t},
+  \]</span> in which <span class="math inline">\(\beta\)</span> and <span
+  class="math inline">\(b\)</span> represent the fixed and random effects.
+  The temporal (Granger-causal) connections between the moods are governed
+  by the <span class="math inline">\(lag(1)\)</span> autoregressive term,
+  <span class="math inline">\((\beta^{ar}+b^{ar}_i)m_{i,t-1}\)</span>. The
+  remaining terms represent the contemporaneous effects of E and the
+  constants (intercepts). For simplicity we assume no connections from
+  symptoms to e.
+</p>
+<p>
+  By stacking mood values, parameters and covariates for every day
+  separately, and forming the design matrices for fixed and random
+  effects, <span class="math inline">\(X\)</span> and <span
+  class="math inline">\(Z\)</span>, data from a single day takes the
+  following matrix form which is equivalent to a linear mixed effects
+  formulation. 
+  <span class="math display">
+    \[
+      Y_i = X_i\beta + Z_i b_i + \epsilon_i.
+    \]
+  </span> 
+  In its general form, the above equation for <span
+  class="math inline">\(k\)</span> symptoms, <span
+  class="math inline">\(Y_i\)</span> is a <span
+  class="math inline">\(k(n_i-1) \times 1\)</span> vector of mood values,
+  <span class="math inline">\(\beta\)</span> is a <span
+  class="math inline">\((k^2+2k) \times 1\)</span> vector of fixed
+  effects, <span class="math inline">\(b_i\)</span> is a <span
+  class="math inline">\((k^2+2k) \times 1\)</span> vector of random
+  effects, <span class="math inline">\(X_i\)</span> and <span
+  class="math inline">\(Z_i\)</span> are <span
+  class="math inline">\(k(n_i-1) \times (k^2+2k)\)</span> design matrices.
+  The random effects <span class="math inline">\(b_i\)</span> and
+  residuals <span class="math inline">\(\epsilon_i\)</span> are assumed to
+  be independent with a multivariate normal (MVN) distribution of 
+  <span class="math display">
+    \[
+      \begin{bmatrix} b_i \newline \epsilon_i \end{bmatrix}  \sim MVN\left(
+      \begin{bmatrix} {0} \newline {0} \end{bmatrix},
+      \begin{bmatrix} G &amp; {0} \newline {0} &amp; \Sigma_i
+      \end{bmatrix}\right).
+    \]
+  </span>
+</p>
+<p>
+  The observations in this formulation have a multivariate normal 
+  marginal distribution given by
+  <span class="math display">
+    \[
+      Y_i \sim MVN(X_i\beta,Z_i G Z_i^T+ \Sigma_i).
+    \]
+  </span>
+</p>
+<p>
+  Any inference in this setting involves the estimation of fixed
+  effects, <span class="math inline">\(\beta\)</span>, and covariance
+  components, <span class="math inline">\(G\)</span>, and <span
+  class="math inline">\(\Sigma_i\)</span>. In practice data from all days
+  are pooled and the estimation is done using the logarithm of the
+  likelihood function.
+</p>
+</div>
+</div>
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
