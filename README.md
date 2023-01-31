@@ -37,7 +37,7 @@ momentary assessments (EMA).
 - follow the R commands in [larmexShiny/data/demo.R](larmexShiny/data/demo.R)
 
 ### To do ...
-- a production-grade shiny applications to be installed as an R package
+- a production-grade Shiny applications to be installed as an R package
  
 <hr>
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
