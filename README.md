@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 # Intraindividual Dynamic Network of Affects
 This repository hosts R code for a Shiny application developed as part of 
 [DynaMORE](http://www.dynamore-project.eu) projct. It provides tools to fit an 
