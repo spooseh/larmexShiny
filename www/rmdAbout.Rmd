@@ -1,0 +1,58 @@
+---
+output:
+  html_document:
+runtime: shiny
+---
+### OUR VISION
+We are a multidisciplinary team of researchers with the joint goal of 
+developing an in-silico model of stress **resilience**. To do so, we monitor 
+healthy at-risk individuals (18+ years old) during stressful life phases, 
+such as transition into adulthood or higher education, training-to-street 
+transition (police officers), or abruptly changed life situations 
+(accident victims in recovery). 
+[Read more ...](https://dynamore-project.eu/about/our-vision/)
+<hr>
+
+### CONTACT
+For inquiries about this tool please contact: <br>
+<span style='color:blue'>
+  Shakoor.Pooseh[AT]fdm.uni-freiburg.de
+</span><hr>
+
+### FUNDING
+This project has received funding from the European Union's Horizon 2020 
+research and innovation programme under grant agreement No 777084.
+<hr>
+<style>
+.bordered{
+  text-align: center;
+  border-right: 0px solid #000;
+  border-left:  0px solid #000;
+  width: 25%
+}
+</style>
+<table style="border: 0px solid">
+  <tr>
+    <td class="bordered">
+      <a href="www.dynamore-project.eu">
+          <img src="logo/DynaMORE.png" alt="DynaMORE" width = 55%>
+      </a>
+    </td>
+    <td class="bordered">
+      <a href="www.fdm.uni-freiburg.de">
+          <img src="logo/fdm1.png"     alt="FDM"     width = 35%>
+      </a>
+    </td>
+    <td class="bordered">
+      <a href="www.uni-freiburg.de">
+          <img src="logo/uniFR.png"   alt="FDM"      width = 20%>
+      </a>
+    </td>
+    <td class="bordered">
+      <a href="">
+          <img src="logo/EU.jpg"     alt="FDM"      width = 30%>
+      </a>
+    </td>
+  </tr>
+</table>
+<hr>
