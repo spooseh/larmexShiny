@@ -17,7 +17,7 @@ momentary assessments (EMA).
     * an Rstudio window opens and shows the user interface
     * you can click **`Open in Browser`** or enter the address next to it, **`http://127.0.0.1:6967`**, on a browser of your choice (6967 may be different in your case)
 
-<img src="./www/img/RunApp3.png" alt="RunApp.png" width="600"/>
+<img src="ist/www/img/RunApp3.png" alt="RunApp.png" width="600"/>
 
 <br>
 
