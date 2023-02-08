@@ -1,71 +1,72 @@
 #####################################################UI
 modelUI <- function(id){
-  ns <- NS(id)
+  ns <- shiny::NS(id)
+  rmdF <- system.file("www", "rmdFit.Rmd", package="larmexShiny")
   opt <- list(names=TRUE)
-  fluidRow(
-    box(
+  shiny::fluidRow(
+    shinydashboard::box(
       title = 'Add\\Remove fixed or random components', width = 12,
       solidHeader=T, collapsible=T, collapsed=T, status = 'primary',
-      sidebarLayout(
-        sidebarPanel(
-          width=12, h6('Network structure: fixed effects'),
-          matrixInput(ns('feM'),class='numeric', cols=opt, rows=opt),
-          hr(), h6('Network structure: random effects'),
-          matrixInput(ns('reM'),class='numeric',  cols=opt, rows=opt),
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
+          width=12, shiny::h6('Network structure: fixed effects'),
+          shinyMatrix::matrixInput(ns('feM'),class='numeric', cols=opt, rows=opt),
+          shiny::hr(), shiny::h6('Network structure: random effects'),
+          shinyMatrix::matrixInput(ns('reM'),class='numeric',  cols=opt, rows=opt),
         ),
-        mainPanel()
+        shiny::mainPanel()
       )
     ),
-    box(
+    shinydashboard::box(
       title = 'Formula', width = 12, solidHeader = TRUE, status = 'primary',
-      sidebarLayout(
-        sidebarPanel(width=12, verbatimTextOutput(ns('frm'))),
-        mainPanel()
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(width=12, shiny::verbatimTextOutput(ns('frm'))),
+        shiny::mainPanel()
       )
     ),
-    box(
-      title = 'Fit Data', width = 12,solidHeader = TRUE, status = 'primary',
-      sidebarLayout(
-        sidebarPanel(
+    shinydashboard::box(
+      title = 'Fit Data', width = 12, solidHeader = TRUE, status = 'primary',
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           width=12,
-          fluidRow(
-            column(width=2, shinyDirButton(ns('dir'), "Save to", "Upload")),
-            column(width=10,verbatimTextOutput(ns('dirTxt'), placeholder=TRUE))
+          shiny::fluidRow(
+            shiny::column(width=2, shinyFiles::shinyDirButton(ns('dir'), "Save to", "Upload")),
+            shiny::column(width=10, shiny::verbatimTextOutput(ns('dirTxt'), placeholder=TRUE))
           ),
-          fluidRow(
-            column(width=5, selectMenu(ns('fitID'), 'IDs to Fit', mult=T)),
-            column(
-              width=4, 
-              checkboxInput(ns("cnt"), label="Center data", value=T)
+          shiny::fluidRow(
+            shiny::column(width=5, selectMenu(ns('fitID'), 'IDs to Fit', mult=T)),
+            shiny::column(
+              width=4,
+              shiny::checkboxInput(ns("cnt"), label="Center data", value=T)
             ),
-            column(
+            shiny::column(
               width=3,
-              div(class='button', style = 'margin-top: 20px',
-                  actionButton(ns('fit'),'FIT', class = "btn-fit")
+              shiny::div(class='button', style = 'margin-top: 20px',
+                         shiny::actionButton(ns('fit'),'FIT', class = "btn-fit")
               )
             )
           )
-           
+
         ),
-        mainPanel(
+        shiny::mainPanel(
           width=12,height=400,
-          div(verbatimTextOutput(ns('infoFit'))),#, placeholder=h4('Information here!'))),
-          div(style = 'overflow-x: scroll;overflow-x: scroll;', 
-              withSpinner(verbatimTextOutput(ns('sumFit')),proxy.height='100px')
+          shiny::div(shiny::verbatimTextOutput(ns('infoFit'))),#, placeholder=h4('Information here!'))),
+          shiny::div(style = 'overflow-x: scroll;overflow-x: scroll;',
+                     shinycssloaders::withSpinner(shiny::verbatimTextOutput(ns('sumFit')), proxy.height='100px')
           )
         )
       )
     ),
-    box(
-      width=12,title='Help',solidHeader=T,collapsible=T,collapsed=T,
-      includeMarkdown('./www/rmdFit.Rmd')
+    shinydashboard::box(
+      width=12, title='Help', solidHeader=T, collapsible=T, collapsed=T,
+      shiny::includeMarkdown(rmdF)
     )
   )
 }
 #####################################################Server
 modelServer <- function(id, objF, sjID, nDay, nBeep, nAbb, ar, ex){
-  moduleServer(id, function(input,output,session){
-    observeEvent(c(ar(), ex(), nAbb()),{
+  shiny::moduleServer(id, function(input,output,session){
+    shiny::observeEvent(c(ar(), ex(), nAbb()),{
       if(is.null(ar()))
         objF$arList <- list()
       else
@@ -81,43 +82,44 @@ modelServer <- function(id, objF, sjID, nDay, nBeep, nAbb, ar, ex){
         genNetMat('reM',objF, session)
       }
     })
-    
-    observeEvent(c(nDay(), nAbb(), input$feM, input$reM),{
+
+    shiny::observeEvent(c(nDay(), nAbb(), input$feM, input$reM),{
       objF$feM <- input$feM
       objF$reM <- input$reM
       setFormulaM(objF)
       frm <- objF$frm
       n = unlist(gregexpr('[(]', frm))
       if(n > 0)
-        output$frm <- renderText({
+        output$frm <- shiny::renderText({
           paste0(substr(frm,1,n-1), '\n   ', substr(frm,n, nchar(frm)))
           })
       else
-        output$frm <- renderText({frm})
+        output$frm <- shiny::renderText({frm})
     })
-    
-    observeEvent(sjID(),{
+
+    shiny::observeEvent(sjID(),{
       if(sjID()!=''){
         x <- c('All',unique(objF$rawData[objF$sjID]))
         opt <- list(placeholder='Click to choose')
-        updateSelectizeInput(session,'fitID',   choices=x, selected=character(), options=opt)
+        shiny::updateSelectizeInput(session,'fitID',   choices=x, selected=character(), options=opt)
       }
     })
-    
-    observeEvent(input$fitID,{
+
+    shiny::observeEvent(input$fitID,{
       if(input$fitID[1] == 'All')
         objF$fitID <- unique(objF$rawData[, objF$sjID])
       else
         objF$fitID <- input$fitID
     })
-    
-    output$sumFit <- renderText({
+
+    output$sumFit <- shiny::renderText({
       'Elapsed time will appear here.'
     })
-    output$infoFit <- renderText({
+    output$infoFit <- shiny::renderText({
       'If successful the ID of the last fitted subject will appear here.'
     })
-    shinyDirChoose(input,'dir',
+
+    shinyFiles::shinyDirChoose(input,'dir',
       roots = c(home = '~'),
       filetypes = c('', 'txt', 'bigWig', "tsv", "csv", "bw")
     )
@@ -125,9 +127,9 @@ modelServer <- function(id, objF, sjID, nDay, nBeep, nAbb, ar, ex){
     hDir <- normalizePath("~")
     fSep <- .Platform$file.sep
     objF$savePath <- hDir
-    output$dirTxt <- renderText({paste0(objF$savePath, fSep, fName)})
-    
-    observeEvent(input$dir, {
+    output$dirTxt <- shiny::renderText({paste0(objF$savePath, fSep, fName)})
+
+    shiny::observeEvent(input$dir, {
       if (!"path" %in% names(input$dir))
         path <- hDir
       else{
@@ -138,46 +140,46 @@ modelServer <- function(id, objF, sjID, nDay, nBeep, nAbb, ar, ex){
           path <- hDir
       }
       objF$savePath <- path
-      output$dirTxt <- renderText({paste0(path, fSep, fName)})
+      output$dirTxt <- shiny::renderText({paste0(path, fSep, fName)})
     })
-    
-    observeEvent(input$fit,{
-      if(!is_formula(objF$frm)){ 
-        showModal(modalDialog(
+
+    shiny::observeEvent(input$fit,{
+      if(!is_formula(objF$frm)){
+        shiny::showModal(shiny::modalDialog(
           title = "",
-          HTML("Please import data and set a formula to be fit!")
+          shiny::HTML("Please import data and set a formula to be fit!")
         ))
         return()
       }
       toDir = file.path(objF$savePath, format(Sys.time(), "res_%d%m%y_%H%M"))
       dir.create(toDir, recursive=T, showWarnings=F)
       objF$savePath <- toDir
-      output$dirTxt <- renderText({toDir})
+      output$dirTxt <- shiny::renderText({toDir})
       t0 <- proc.time()
       for(sj in objF$fitID){
-        output$infoFit <- renderPrint({
+        output$infoFit <- shiny::renderPrint({
           print(sprintf("Subject %s done!", sj))
         })
-        output$sumFit <- renderPrint({
+        output$sumFit <- shiny::renderPrint({
           proc.time()-t0
         })
         fitLmer1(objF, sj, toDir)
         fName <- paste0('re_', sj, '.csv')
-        validate(
-          need(file.exists(file.path(toDir, fName)), 'Fitting failed!')
+        shiny::validate(
+          shiny::need(file.exists(file.path(toDir, fName)), 'Fitting failed!')
         )
       }
     })
-    
+
     # observeEvent(input$feM,{
     #   objF$feM <- input$feM
     # })
-    # 
+    #
     # observeEvent(input$reM,{
     #   objF$reM <- input$reM
     # })
-    
-    observeEvent(input$cnt,{
+
+    shiny::observeEvent(input$cnt,{
       objF$doCenter <- input$cnt
     })
   })

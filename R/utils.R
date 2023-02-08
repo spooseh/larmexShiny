@@ -1,9 +1,39 @@
 #####################################################Util
+testLevels <- function(input, session, objF){
+  if(input$sjID!='' & input$nDay!='' & input$nBeep!=''){
+    x <- propperLevels(objF)
+    id <- x[[1]]
+    nD <- x[[2]]
+    flag <- x[[3]]
+    msg <- x[[4]]
+    if(!all(flag)){
+      shiny::showModal(shiny::modalDialog(
+        title = "",
+        shiny::HTML("Please make sure that for each subject every level of \"nDay\\nWeek\"
+                 has multiple \"nBeep\" items!. The following is the first problematic
+                 encounter in data.", "<br>",
+                    "Possible cause:", "<br>",
+                    "   Subject ID: ", sprintf("%s", id), "<br>",
+                    "   Day\\Week number: ", sprintf("%s", nD), "<br>",
+                    "   Beeps: ", msg, "<br>",
+                    "There might be further such problems!")
+      ))
+      if(!flag[1])
+        shiny::updateSelectizeInput(session,"nDay",  selected=list())
+      if(!flag[2])
+        shiny::updateSelectizeInput(session,"nBeep",  selected=list())
+    }else{
+      x <- setdiff(colnames(objF$rawData), c(objF$sjID, objF$nDay, objF$nBeep))
+      updateMenus(session, c("arList","exList"), choices=x)
+    }
+  }
+}
+#####################################################Util
 # ch=list()
-selectMenu <- function(id, lab, choices=list(), mult=F, 
+selectMenu <- function(id, lab, choices=list(), mult=F,
                        opt=list(placeholder='Import data first')){
-  selectizeInput(
-    id, 
+  shiny::selectizeInput(
+    id,
     label = lab,
     choices = choices,
     multiple = mult,
@@ -11,10 +41,10 @@ selectMenu <- function(id, lab, choices=list(), mult=F,
 }
 #####################################################Util
 # ch=list()
-updateMenus <- function(session, listID,   choices=list(), sel=list(), 
+updateMenus <- function(session, listID,   choices=list(), sel=list(),
                        opt=list(placeholder='Click to choose')){
   for(id in listID)
-    updateSelectizeInput(session, id, choices=choices, selected=sel, options=opt)
+    shiny::updateSelectizeInput(session, id, choices=choices, selected=sel, options=opt)
 }
 #####################################################Util
 genNetMat <- function(id, objF, session){
@@ -33,7 +63,7 @@ genNetMat <- function(id, objF, session){
   }
   rownames(M) <- paste0('=> ', objF$arAbb)
   colnames(M) <- c(colM, colE, colC)
-  updateMatrixInput(session, id, M)
+  shinyMatrix::updateMatrixInput(session, id, M)
 }
 #####################################################Util
 genAbb <- function(orgList,n){
@@ -47,7 +77,7 @@ genAbb <- function(orgList,n){
 is_formula <- function(x){
   tryCatch(
     expr = {
-      as.formula(x)
+      stats::as.formula(x)
       return(T)
     },
     error = function(e){
@@ -57,5 +87,5 @@ is_formula <- function(x){
     },
     finally = {
     }
-  )    
+  )
 }

@@ -7,17 +7,13 @@ momentary assessments (EMA).
 ## How to use the app?
 - install **R** from [r-project](https://www.r-project.org/)
     * install **RStudio** from [rstudio-desktop](https://posit.co/download/rstudio-desktop/)
-    * see `sessionInfo.txt` for version information 
-- clone or download the repository
-    * **`git clone https://github.com/spooseh/larmexShiny.git`**
+- to install packages from GitHub one needs the R package "remotes"
+    * **`install.packages("remotes")`**
+- install **`larmexShiny`**
+  * **`remotes::install_github(repo = "spooseh/larmexShiny", ref = "master", dependencies = TRUE)`**
 ### Run the app locally
-- navigate to the local directory, **`larmexShiny`**, in RStudio
-- optional: for a smooth work flow, make this folder, by `setwd()`, the working directory 
-- open **`packInstaller.R`** and press **`Source`** in RStudio
-    * it run the command `source("packInstaller.R")` 
-    * install the missing packages manually
-    * see `sessionInfo.txt` for version information 
-- open the **`runLARMEx.R`** file and click the **`Run App`** at the top of your editor's menu
+- load the package, **`library(larmexShiny)`**
+- run **`runLARMEx()`** in command line 
     * an Rstudio window opens and shows the user interface
     * you can click **`Open in Browser`** or enter the address next to it, **`http://127.0.0.1:6967`**, on a browser of your choice (6967 may be different in your case)
 
@@ -30,10 +26,11 @@ momentary assessments (EMA).
 - detailed instructions in [larmexShiny/www/Instructions.md](https://github.com/spooseh/larmexShiny/www/Instructions.md)
 
 ### Not interested in a GUI?
-- follow the R commands in [larmexShiny/data/demo.R](larmexShiny/data/demo.R)
+- follow the R commands in [larmexShiny/www/demo.Rmd](larmexShiny/data/demo.R)
 
 ### To do ...
-- a production-grade Shiny applications to be installed as an R package
+- exception handling
+- more documentation
  
 <hr>
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">

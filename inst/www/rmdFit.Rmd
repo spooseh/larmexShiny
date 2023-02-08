@@ -5,7 +5,7 @@ runtime: shiny
 ---
 After importing data and selecting variables an **`lmer`** formula appears in 
 **`Formula`** section. This is the model assuming a fully connected mood 
-network where all autoregressive (AR) and exogenuous (EX) variables
+network where all autoregressive (AR) and exogenous (EX) variables
 have fixed and random components. 
 
 ### Add\Remove fixed or random components
@@ -36,7 +36,7 @@ created directory.
 The following files are saved after a successful fit. [ID] is replaced by a 
 corresponding subject ID.
 - **sbj_[ID].RData**: holds a "LARMExFit" R6 object named `fit_[ID]` with with 
-the following fields. Fields are accesible by `$`, e.g., `fit_someID$rawData`
+the following fields. Fields are accessible by `$`, e.g., `fit_someID$rawData`
   * `rawData`: subjects data
   * `sjID`:    variable name, subject ID
   * `nBeep`:   variable name, number of beeps

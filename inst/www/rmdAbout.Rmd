@@ -21,7 +21,7 @@ For inquiries about this tool please contact: <br>
 
 ### FUNDING
 This project has received funding from the European Union's Horizon 2020 
-research and innovation programme under grant agreement No 777084.
+research and innovation program under grant agreement No 777084.
 <hr>
 <style>
 .bordered{

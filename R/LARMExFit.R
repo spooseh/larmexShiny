@@ -1,14 +1,11 @@
-library(lmerTest)
-library(R6)
-#######################################
-#' Collection of data and settings 
-#' 
+#' Collection of data and settings
+#'
 #' An R6Class is used instead of a named list
-#' because we needed a data structure to be passed to functions by reference 
-#' instead of value. It is not implemented in a pure object oriented form for 
-#' simplicity. However, it is kept similar by naming this object "self" 
+#' because we needed a data structure to be passed to functions by reference
+#' instead of value. It is not implemented in a pure object oriented form for
+#' simplicity. However, it is kept similar by naming this object "self"
 #' and passing it as an argument to independent functions.
-#' 
+#'
 #' @field rawData data, single or multiple subjects, long dataframe
 #' @field sjID    variable name, subject ID, character
 #' @field nBeep   variable name, number of beeps, character
@@ -20,16 +17,18 @@ library(R6)
 #' @field exAbb   exlist after abbreviation
 #' @field fitID   list of subject of IDs to be fitted
 #' @field frm     "lmer" formula to be fit
-#' @field fitRes  result of fitting 
+#' @field fitRes  result of fitting
 #' @field feM     adjacency matrix of fixed effects
 #' @field reM     adjacency matrix of random effects
 #' @field savePath path to save results, default to HOME
 #' @field doCenter center mood and external factor values per subject
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <-LARMExFit$new()
 #' obj1$arList <- c("mood1", "mood2")
-LARMExFit <- R6Class(
+LARMExFit <- R6::R6Class(
   'LARMExFit',
   public = list(
     rawData = NULL, # data, long, single or multiple subjects, dataframe
@@ -43,20 +42,22 @@ LARMExFit <- R6Class(
     exAbb   = NULL, # EX list after abbreviation
     fitID   = NULL, # list of subject of IDs to be fitted
     frm     = NULL, # lmer formula to be fit
-    fitRes  = NULL, # result of fitting 
+    fitRes  = NULL, # result of fitting
     feM = matrix(0,1,1), # adjacency matrix of fixed effects
     reM = matrix(0,1,1), # adjacency matrix of random effects
-    savePath = normalizePath("~"), # path to save results, default to HOME 
+    savePath = normalizePath("~"), # path to save results, default to HOME
     doCenter = TRUE # center mood and external factor values per subject
   )
 )
 #######################################
-#' Check if data hase aproper multilevel form for the Shiny app
+#' Check if data has a proper multilevel form for the Shiny app
 #'
-#' @param self LARMExFit. A setRefClass object holding data and settings
+#' @param self LARMExFit. An R6Class object holding data and settings
 #' @param nD integer. Minimum number of days per subject
-#' @param nB integer. Minimum number of beeps per day 
-#' @examples
+#' @param nB integer. Minimum number of beeps per day
+#'
+#' @export
+#'
 propperLevels <- function(self, nD=2, nB=2){
   id <- unique(self$rawData[ ,self$sjID])
   flag <- c(T, T)
@@ -97,6 +98,8 @@ propperLevels <- function(self, nD=2, nB=2){
 #' If $nAbb is zero or greater than the lengths of all names, the original
 #' names are retained.
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <-LARMExFit$new()
 #' obj1$arList <- c("mood1", "mood2")
@@ -117,22 +120,25 @@ doAbbreviate <- function(self){
 #' @param self LARMExFit. A setRefClass object holding data and settings
 #'
 #' @return Updates $feM and $reM based on $arAbb and $exAbb of self
+#'
+#' @export
+#'
 adjMats <- function(self){
   doAbbreviate(self)
   n <- length(self$arAbb)
   m <- length(self$exAbb)
   M <- matrix(1, n, n+m)
-  colM <- paste0(objF$arAbb,' =>')
+  colM <- paste0(self$arAbb,' =>')
   if(m > 0)
-    colE <- paste0(objF$exAbb,' =>')
+    colE <- paste0(self$exAbb,' =>')
   else
     colE <- list()
-  rownames(M) <- paste0('=> ', objF$arAbb)
+  rownames(M) <- paste0('=> ', self$arAbb)
   colnames(M) <- c(colM, colE)
   self$feM <- M
   colC <- "C =>"
   M <- matrix(1, n, n+m+1)
-  rownames(M) <- paste0('=> ', objF$arAbb)
+  rownames(M) <- paste0('=> ', self$arAbb)
   colnames(M) <- c(colM, colE, colC)
   self$reM <- M
 }
@@ -141,28 +147,31 @@ adjMats <- function(self){
 #'
 #' @param self  LARMExFit. A setRefClass object holding data and settings
 #' @param x Network edge matrix with elements of "FROM_TO" form.
-#'  FROM and TO are node names from $arAbb and $exAbb of self  
+#'  FROM and TO are node names from $arAbb and $exAbb of self
 #' @param M Network adjacency matrix of fixed or random effects
 #'
 #' @return Part of an "lmer" formula
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <-LARMExFit$new()
-#' obj1$nDay <- "Day"
+#' obj1$nDay <- "nDay"
 #' obj1$arList <- c("mood1", "mood2")
 #' obj1$exList <- "E"
 #' adjMats(obj1)
 #' doAbbreviate(obj1)
+#' n <- length(obj1$arAbb)
 #' m <- length(obj1$exAbb)
 #' vars <- t(outer(c(obj1$arAbb, obj1$exAbb), obj1$arAbb, FUN=paste, sep='_'))
 #' FE <- frmPart(obj1, vars, obj1$feM)
 #' RE <- frmPart(obj1, vars, obj1$reM[ ,1:(n+m)])
-frmPart <- function(self, x, M){ 
+frmPart <- function(self, x, M){
   n <- length(self$arList)
   m <- length(self$exList)
   x[!M] <- NA
-  ar <- as.vector(t(x[ , 1:n])) 
-  ar <- ar[!is.na(ar)] 
+  ar <- as.vector(t(x[ , 1:n]))
+  ar <- ar[!is.na(ar)]
   if(m > 0){
     ex <- as.vector(t(x[ , (n+1):(n+m), drop=F]))
     ex <- ex[!is.na(ex)]
@@ -171,16 +180,18 @@ frmPart <- function(self, x, M){
     return(ar)
 }
 #######################################
-#' Generate mixed-effects formula from adjacency matrices of fixed and 
+#' Generate mixed-effects formula from adjacency matrices of fixed and
 #' random effects given that "self" has at least two variables in $arList
 #'
-#' @param self  LARMExFit. A setRefClass object holding data and settings 
+#' @param self  LARMExFit. A setRefClass object holding data and settings
 #'
 #' @return self$frm is updated
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <-LARMExFit$new()
-#' obj1$nDay <- "Day"
+#' obj1$nDay <- "nDay"
 #' obj1$arList <- c("M1", "M2")
 #' obj1$exList <- "E"
 #' adjMats(obj1)
@@ -211,25 +222,29 @@ setFormulaM <-  function(self){
   self$frm <- frm
 }
 #######################################
-#' Generate mixed-effects formula from a transformed data frame 
+#' Generate mixed-effects formula from a transformed data frame
 #' see help('prepData2Fit')
 #'
-#' @param self LARMExFit. A setRefClass object holding data and settings 
+#' @param self LARMExFit. A setRefClass object holding data and settings
+#' @param data2Fit the formula is constructed from its columns of prepared data
 #'
 #' @return self$frm is updated
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <- LARMExFit$new()
-#' obj1$rawData <- read.csv('./data/simMood.csv')
-#' obj1$nDay <- "Day"
-#' obj1$nBeep <- "Beep"
+#' fpath <- system.file("extdata", "simMood.csv", package="larmexShiny")
+#' obj1$rawData <- read.csv(fpath)
+#' obj1$nDay <- "nDay"
+#' obj1$nBeep <- "nBeep"
 #' obj1$arList <- c("M1", "M2")
 #' obj1$exList <- "E"
 #' selCols <- c(obj1$nDay, obj1$nBeep, obj1$arList, obj1$exList)
 #' sj <- 1001
 #' sjData <- obj1$rawData[obj1$rawData[obj1$sjID]==sj, selCols]
 #' df2Fit <- prepData2Fit(obj1, sjData)
-#' setFormulaDf(obj1, data2Fit)
+#' setFormulaDf(obj1, df2Fit)
 setFormulaDf <-  function(self, data2Fit){
   RE <- colnames(data2Fit)[c(-1,-2)]
   FE <- RE[!RE %in% grep(paste0(c('C'), collapse = "|"), RE, value = T)]
@@ -239,16 +254,19 @@ setFormulaDf <-  function(self, data2Fit){
 #######################################
 #' Transform raw data to a format suitable for fitting by LARMEx
 #'
-#' @param self LARMExFit. A setRefClass object holding data and settings 
+#' @param self LARMExFit. A setRefClass object holding data and settings
 #' @param sjData Raw data for single subject
 #'
 #' @return data.frame. Transformed data
 #'
+#' @export
+#'
 #' @examples
 #' obj1 <- LARMExFit$new()
-#' obj1$rawData <- read.csv('./data/simMood.csv')
-#' obj1$nDay <- "Day"
-#' obj1$nBeep <- "Beep"
+#' fpath <- system.file("extdata", "simMood.csv", package="larmexShiny")
+#' obj1$rawData <- read.csv(fpath)
+#' obj1$nDay <- "nDay"
+#' obj1$nBeep <- "nBeep"
 #' obj1$arList <- c("M1", "M2")
 #' obj1$exList <- "E"
 #' selCols <- c(obj1$nDay, obj1$nBeep, obj1$arList, obj1$exList)
@@ -260,10 +278,10 @@ prepData2Fit <-  function(self, sjData){
   colnames(sjData) <- c(self$nDay, self$nBeep, self$arAbb, self$exAbb)
   nVar <- length(self$arList)
   nExg <- length(self$exList)
-  colM <- paste(rep(self$arAbb,nVar),rep(self$arAbb,each=nVar),sep='_') 
-  colE <- paste(rep(self$exAbb,nVar),rep(self$arAbb,each=nExg),sep='_') 
+  colM <- paste(rep(self$arAbb,nVar),rep(self$arAbb,each=nVar),sep='_')
+  colE <- paste(rep(self$exAbb,nVar),rep(self$arAbb,each=nExg),sep='_')
   colC <- paste('C', self$arAbb, sep='_')
-  col  <-c(self$nDay, 'M', colM, colE, colC) 
+  col  <-c(self$nDay, 'M', colM, colE, colC)
   D <- matrix(ncol=length(col),nrow=0)
   for(nd in unique(sjData[[self$nDay]])){
     d1 <- sjData[sjData[self$nDay]==nd, ]
@@ -284,14 +302,14 @@ prepData2Fit <-  function(self, sjData){
     dC <- kronecker(diag(nVar), C)
     D <- rbind(D,cbind(rep(nd,nVar*(nObs-1)),dM,dL,dE,dC))
   }
-  fitData <- data.frame(D[complete.cases(D), ])
+  fitData <- data.frame(D[stats::complete.cases(D), ])
   colnames(fitData) <- col
   return(fitData)
 }
 #######################################
 #' Fit a LARMEx model to the data of a single subject
 #'
-#' @param self LARMExFit. A setRefClass object holding data and settings 
+#' @param self LARMExFit. n R6Class object holding data and settings
 #' @param sj ID for a single subject
 #' @param toDir Path to save results
 #'
@@ -299,20 +317,25 @@ prepData2Fit <-  function(self, sjData){
 #'
 #' @examples
 #' obj1 <- LARMExFit$new()
-#' obj1$rawData <- read.csv('./data/simMood.csv')
-#' obj1$nDay <- "Day"
-#' obj1$nBeep <- "Beep"
+#' fpath <- system.file("extdata", "simMood.csv", package="larmexShiny")
+#' obj1$rawData <- read.csv(fpath)
+#' obj1$sjID <- "sjID"
+#' obj1$nDay <- "nDay"
+#' obj1$nBeep <- "nBeep"
 #' obj1$arList <- c("M1", "M2")
 #' obj1$exList <- "E"
 #' obj1$savePath <- normalizePath("~")
 #' selCols <- c(obj1$nDay, obj1$nBeep, obj1$arList, obj1$exList)
-#' toDir = file.path(objF$savePath, "fitRes")
-#' dir.create(toDir, recursive=T, showWarnings=F)
+#' toDir = file.path(obj1$savePath, "fitRes")
+#' dir.create(toDir, recursive=TRUE, showWarnings=FALSE)
 #' sj <- 1001
+#' sjData <- obj1$rawData[obj1$rawData[obj1$sjID]==sj, selCols]
+#' df2Fit <- prepData2Fit(obj1, sjData)
+#' setFormulaDf(obj1, df2Fit)
 #' fitLmer1(obj1, sj, toDir)
 fitLmer1 <-  function(self, sj, toDir){
   if(is.null(sj))
-    return
+    return()
   selCols <- c(self$nDay, self$nBeep, self$arList, self$exList)
   sjData <- self$rawData[self$rawData[self$sjID]==sj, selCols]
   if(self$doCenter)
@@ -322,8 +345,8 @@ fitLmer1 <-  function(self, sj, toDir){
         sjData[ , c] <- sjData[ , c] - avg
     }
   df <- prepData2Fit(self,sjData)
-  ctrl <- lmerControl(optimizer = "nloptwrap", calc.derivs = FALSE)
-  res <- lmer(self$frm, df, REML=FALSE, control=ctrl)
+  ctrl <- lme4::lmerControl(optimizer = "nloptwrap", calc.derivs = FALSE)
+  res <- lmerTest::lmer(self$frm, df, REML=FALSE, control=ctrl)
   self$fitRes <- res
   sjObj <- self$clone()
   sjObj$rawData <- sjData
@@ -333,10 +356,10 @@ fitLmer1 <-  function(self, sj, toDir){
   fName <- file.path(toDir,paste0('sbj_', sj, '.RData'))
   eval(parse(text=paste0("save(", vName, ", file=fName)")))
   fName <- file.path(toDir, paste0('summary_', sj, '.txt'))
-  capture.output(summary(res), file=fName)
+  utils::capture.output(summary(res), file=fName)
   fName <- file.path(toDir, paste0('fe_', sj, '.csv'))
-  write.csv(coef(summary(res)), file=fName)
+  utils::write.csv(stats::coef(summary(res)), file=fName)
   fName <- file.path(toDir, paste0('re_', sj, '.csv'))
-  write.csv(ranef(res)[[self$nDay]], file=fName)
+  utils::write.csv(lme4::ranef(res)[[self$nDay]], file=fName)
 }
 #######################################

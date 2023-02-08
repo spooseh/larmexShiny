@@ -1,12 +1,23 @@
 Package: larmexShiny
-Title: What the Package Does (One Line, Title Case)
+Title: Intraindividual Dynamic Network of Affects: Linear Autoregressive
+    Mixed-Effects Models for Ecological Momentary Assessment
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Shakoor", "Pooseh", , "Shakoor.Pooseh@fdm.uni-freiburg.de", role = c("cre", "aut"))
+Description: LARMExApp is a Shiny application to construct dynamic
+    networks from ecological momentary assessments which are usually
+    collected through questionaires during several days. The individual
+    networks are the result of fitting vector autoregressive mixed-effects
+    models to sigle-subject data.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports: 
+    lme4,
+    lmerTest,
+    shiny,
+    shinycssloaders,
+    shinydashboard,
+    shinyFiles,
+    shinyMatrix
