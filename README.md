@@ -15,18 +15,18 @@ This repository hosts R code for a Shiny application developed as part of [DynaM
     -   **`remotes::install_github(repo = "spooseh/larmexShiny", ref = "master", dependencies = TRUE)`**
 -   load the package
     -   **`library(larmexShiny)`**
--   run in command line
+-   run in R command line
     -   **`runLARMEx()`**
 
 ### II. Download the source code and run locally
 
 - two ways to get the codes:
-    - i.  through terminal by **cloning** or download the repository
-        *   **`git clone -b clone_and_run --single-branch https://github.com/spooseh/larmexShiny.git`**
-    - ii. **downloading** the repository through a browser
-        *   go to [github.com/spooseh/larmexShiny](https://github.com/spooseh/larmexShiny.git)
-        *   select the branch "clone_and_run"
-        *   download the code as a zip file ("larmexShiny-clone_and_run.zip")
+    - i.  through terminal by **cloning** the repository
+        -   **`git clone -b clone_and_run --single-branch https://github.com/spooseh/larmexShiny.git`**
+    - ii. through a browser by **downloading** the repository 
+        -   go to [github.com/spooseh/larmexShiny](https://github.com/spooseh/larmexShiny.git)
+        -   select the branch "clone_and_run"
+        -   download the code as a zip file ("larmexShiny-clone_and_run.zip")
 
 -   navigate to the local directory, **`larmexShiny`**, in RStudio
 
@@ -54,8 +54,39 @@ This repository hosts R code for a Shiny application developed as part of [DynaM
 -   detailed instructions in [larmexShiny/www/Instructions.md](https://github.com/spooseh/larmexShiny/www/Instructions.md)
 
 ### Not interested in a GUI?
+Once "larmexShiny" is installed in R:
+- access a sumulated data
+    * `simMood <- system.file("extdata", "simMood.csv", package="larmexShiny")`
+- create an object holding the setting
+    * `obj1 <- LARMExFit$new()`
+    * `?LARMExFit` for more information
+- assign raw data, long, single or multiple subjects, dataframe
+    * `obj1$rawData <- read.csv(simMood)`
+- variable name, subject ID, character 
+    * `obj1$sjID <- "sjID"` 
+- variable name, number of beeps, character
+    * `obj1$nDay <- "nDay"`
+- variable name, number of days, character 
+    * `obj1$nBeep <- "nBeep"`
+- variable names, interacting moods (AR nodes), character
+    * `obj1$arList <- c("M1", "M2")`
+- variable names, external factors acting on meeds (EX nodes), character
+    * `obj1$exList <- "E"`
+- where to save results, default to HOME
+    * `obj1$savePath <- normalizePath("~")`
+    * `toDir = file.path(obj1$savePath, "fitRes")`
+    * `dir.create(toDir, recursive=TRUE, showWarnings=FALSE)`
+- extract data for a single subject 
+    * `sj <- 1001`
+    * `selCols <- c(obj1$nDay, obj1$nBeep, obj1$arList, obj1$exList)`
+    * `sjData <- obj1$rawData[obj1$rawData[obj1$sjID]==sj, selCols]`
+- transform the data into a special format suitable for LARMEx
+    * `df2Fit <- prepData2Fit(obj1, sjData)`
+- set the formula using the transformed data (the column names are used) 
+    * `setFormulaDf(obj1, df2Fit)`
+- fit the data and save the results
+    * `fitLmer1(obj1, sj, toDir)`
 
--   follow the R commands in [larmexShiny/www/demo.Rmd](larmexShiny/data/demo.R)
 
 ### To do ...
 
