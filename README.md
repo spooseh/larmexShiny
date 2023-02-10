@@ -54,10 +54,11 @@ This repository hosts R code for a Shiny application developed as part of [DynaM
 -   detailed instructions in [larmexShiny/www/Instructions.md](https://github.com/spooseh/larmexShiny/www/Instructions.md)
 
 ### Not interested in a GUI?
-Once "larmexShiny" is installed in R:
-- access a sumulated data
+The following steps walk you through the workflow of fitting some simulated data
+and hopefully demonsterate how to treat your own. Once "larmexShiny" is installed in R:
+- access the simulated data included in the package
     * `simMood <- system.file("extdata", "simMood.csv", package="larmexShiny")`
-- create an object holding the setting
+- create an object holding the data and settings
     * `obj1 <- LARMExFit$new()`
     * `?LARMExFit` for more information
 - assign raw data, long, single or multiple subjects, dataframe
