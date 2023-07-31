@@ -3,9 +3,9 @@ output:
   html_document:
 runtime: shiny
 ---
-After importing data and selecting variables an **`lmer`** formula appears in 
-**`Formula`** section. This is the model assuming a fully connected mood 
-network where all autoregressive (AR) and exogenuous (EX) variables
+After importing data and selecting variables an **lmer** formula appears in the
+**Formula** section. This is the model assuming a fully connected mood 
+network where all autoregressive (AR) and exogenous (EX) variables
 have fixed and random components. 
 
 ### Add\Remove fixed or random components
@@ -13,27 +13,27 @@ Every term in the "formula" has a format of "FROM_TO" which corresponds to a
 temporal relation from the variable "FROM" to the variable "TO" and in turn to 
 an edge in the network representation. An adjacency matrix representing a 
 network is used to include terms in the formula. The presence of an edge in the
-network is marked by **`1`** in the cell corresponding to the the column *FROM =>*
+network is marked by **1** in the cell corresponding to the the column *FROM =>*
 and the row, *=> TO*.  If you would like to delete the term, change the cell value 
-to **`0`**. The upper and lower matrices represent the fixed and random effects, 
+to **0**. The upper and lower matrices represent the fixed and random effects, 
 respectively. 
 
 ### Fit data
-- **`Save to`**: By default the results will be saved in the "home" directory of 
+* `Save to`: By default the results will be saved in the "home" directory of 
 the user by making a new folder named "res_[date]_[time]" in which *data* and 
-*time* are taken from the moment the **`FIT`** button is pressed. One can change 
+*time* are taken from the moment the **FIT** button is pressed. One can change 
 the root directory to be different than "home" by selecting a new target 
 through the "Save to" button.
-- **`IDs to Fit`**: Here one can select one or multiple subject IDs for fitting. The
-whole data set will be fit if `All` is selected. 
-- **`Center data`**: if checked, values of moods and external factors are
+* `IDs to Fit`: Here one can select one or multiple subject IDs for fitting. The
+whole data set will be fit if **All** is selected. 
+* `Center data`: if checked, values of moods and external factors are
 centered for single subjects.
-- **`FIT`**: Data for individual subjects is extracted and fitted repeatedly and the 
+* `FIT`: Data for individual subjects is extracted and fitted repeatedly and the 
 ID of the last successfully fitted subject together with the time spent is 
 printed out. The output directory is also updated by the real name of the 
 created directory.
 
-The following files are saved after a successful fit. [ID] is replaced by a 
+The following files are saved after a successful fit. *ID* is replaced by a 
 corresponding subject ID.
 - **sbj_[ID].RData**: holds a "LARMExFit" R6 object named `fit_[ID]` with with 
 the following fields. Fields are accesible by `$`, e.g., `fit_someID$rawData`
@@ -53,6 +53,6 @@ the following fields. Fields are accesible by `$`, e.g., `fit_someID$rawData`
   * `reM`:     adjacency matrix of random effects
   * `savePath`: path to saved results
   * `doCenter`: true if mood and external factor values are centered per subject
-- **`summary_[ID].txt`**: the output of `lm4::summary()`
-- **`fe_[ID].csv`**: data frame of fixed effects
-- **`re_[ID].csv`**: data frame of random effects
+- **summary_[ID].txt**: the output of `lm4::summary()`
+- **fe_[ID].csv**: data frame of fixed effects
+- **re_[ID].csv**: data frame of random effects
