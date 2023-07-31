@@ -16,8 +16,8 @@ contemporaneously.
 
 You need to choose the corresponding columns from the drop-down menus. If you 
 prefer to have shorter variable names, the desired number of characters 
-could be set from **`Abbreviation`** menu. If it's set to `0`, no abbreviations 
+could be set from **Abbreviation** menu. If it's set to **0**, no abbreviations 
 will be made.
 
 Once all variables are chosen, the default model formula is set on the following
-page, **`Model`**.
+panel, **Model**.
