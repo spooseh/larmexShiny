@@ -4,46 +4,50 @@ This repository hosts R code for a Shiny application developed as part of [DynaM
 
 ## How to use the app?
 
--   install **R** from [r-project](https://www.r-project.org/)
--   install **RStudio** from [rstudio-desktop](https://posit.co/download/rstudio-desktop/)
+### I. The online version
+- [larmexShiny](https://spooseh.shinyapps.io/larmexShiny/)
 
-### I. Install as an R package
+### II. Running on local computer
+- install **R** from [r-project](https://www.r-project.org/)
+- install **RStudio** from [rstudio-desktop](https://posit.co/download/rstudio-desktop/)
 
--   to install packages from GitHub one needs the R package "remotes"
-    -   **`install.packages("remotes")`**
--   install "larmexShiny""
-    -   **`remotes::install_github(repo = "spooseh/larmexShiny", ref = "master", dependencies = TRUE)`**
--   load the package
-    -   **`library(larmexShiny)`**
--   run in R command line
-    -   **`runLARMEx()`**
+#### II.I. Install as an R package
 
-### II. Download the source code and run locally
+- to install packages from GitHub one needs the R package "remotes"
+    - **`install.packages("remotes")`**
+- install "larmexShiny""
+    - **`remotes::install_github(repo = "spooseh/larmexShiny", ref = "master", dependencies = TRUE)`**
+- load the package
+    - **`library(larmexShiny)`**
+- run in R command line
+    - **`runLARMEx()`**
+
+#### II.II. Download the source code and run locally
 
 - two ways to get the codes:
-    - i.  through terminal by **cloning** the repository
-        -   **`git clone -b clone_and_run --single-branch https://github.com/spooseh/larmexShiny.git`**
+    - i. through terminal by **cloning** the repository
+        - **`git clone -b clone_and_run --single-branch https://github.com/spooseh/larmexShiny.git`**
     - ii. through a browser by **downloading** the repository 
-        -   go to [github.com/spooseh/larmexShiny](https://github.com/spooseh/larmexShiny.git)
-        -   select the branch "clone_and_run"
-        -   download the code as a zip file ("larmexShiny-clone_and_run.zip")
+        - go to [github.com/spooseh/larmexShiny](https://github.com/spooseh/larmexShiny.git)
+        - select the branch "clone_and_run"
+        - download the code as a zip file ("larmexShiny-clone_and_run.zip")
 
--   navigate to the local directory, **`larmexShiny`**, in RStudio
+- navigate to the local directory, **`larmexShiny`**, in RStudio
 
--   optional: for a smooth work flow, make this folder, by `setwd()`, the working directory
+- optional: for a smooth work flow, make this folder, by `setwd()`, the working directory
 
--   open **`packInstaller.R`** and press **`Source`** in RStudio
+- open **`packInstaller.R`** and press **`Source`** in RStudio
 
-    -   it runs the command `source("packInstaller.R")`
-    -   one could install the missing packages manually
-    -   see `sessionInfo.txt` for version information
+    - it runs the command `source("packInstaller.R")`
+    - one could install the missing packages manually
+    - see `sessionInfo.txt` for version information
 
--   open the **`runLARMEx.R`** file and click the **`Run App`** at the top of your editor's menu
+- open the **`runLARMEx.R`** file and click the **`Run App`** at the top of your editor's menu
 
 ## What you see
 
--   an Rstudio window opens and shows the user interface
--   you can click **`Open in Browser`** or enter the address next to it, **`http://127.0.0.1:6967`**, on a browser of your choice (6967 may be different in your case)
+- an Rstudio window opens and shows the user interface
+- you can click **`Open in Browser`** or enter the address next to it, **`http://127.0.0.1:6967`**, on a browser of your choice (6967 may be different in your case)
 
 <img src="inst/www/img/RunApp3.png" alt="RunApp.png" width="600"/>
 
@@ -51,7 +55,7 @@ This repository hosts R code for a Shiny application developed as part of [DynaM
 
 ### Instructions
 
--   detailed instructions in [larmexShiny/www/Instructions.md](https://github.com/spooseh/larmexShiny/www/Instructions.md)
+- detailed instructions in [larmexShiny/www/Instructions.md](https://github.com/spooseh/larmexShiny/www/Instructions.md)
 
 ### Not interested in a GUI?
 The following steps walk you through the workflow of fitting some simulated data
@@ -91,8 +95,8 @@ and hopefully demonsterate how to treat your own. Once "larmexShiny" is installe
 
 ### To do ...
 
--   exception handling
--   more documentation
+- exception handling
+- more documentation
 
 <hr>
 
