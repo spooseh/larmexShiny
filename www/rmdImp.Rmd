@@ -3,21 +3,31 @@ output:
   html_document:
 runtime: shiny
 ---
-Please make sure that your data has a comma separated (`CSV`) format. It is 
-assumed that the following columns are present.
-- **`ID`**: Subject ID with character or numerical values
-- **`Day\Week`**: Number of days or weeks as integers
-- **`Beep`**: Number of beeps as integers in an ascending form
-- **`Autoregressive`**: Chosen from mood observations ideally mean centered for 
-every subject. These are supposed to be the interacting moods in the network 
-representation.
-- **`Exogenous`**: External factors. These are the nodes acting on all AR nodes 
-contemporaneously.
+Please ensure that your data follows a comma-separated (`CSV`) format. We assume 
+that the dataset includes the following columns:
 
-You need to choose the corresponding columns from the drop-down menus. If you 
-prefer to have shorter variable names, the desired number of characters 
-could be set from `Abbreviation` menu. If it's set to `0`, no abbreviations 
-will be made.
+- **`ID`**: This column should contain the subject's ID, which can be either 
+characters or numerical values.
+- **`Day\Week`**: This column should represent the number of days or weeks using 
+integers.
+- **`Beep`**: Here, integers should indicate the number of beeps, arranged in 
+ascending order.
+- **`Autoregressive`**: Choose mood observations for these columns, ideally 
+mean-centered for each subject. These selections should represent the 
+interacting moods within the network depiction.
+- **`Exogenous`**: These columns should encompass external factors, functioning 
+as nodes that concurrently impact all AR nodes.
 
-Once all variables are chosen, the default model formula is set on the following
-page, `Model`.
+You will need to select the appropriate columns from the provided drop-down 
+menus. If you desire shorter variable names, you have the option to specify the 
+desired number of characters in the **Abbreviation** menu. Selecting **0** will 
+result in no abbreviations being applied.
+
+Once you've designated all the necessary variables, the default model formula 
+will be established in the subsequent **Model** panel.
+
+
+
+
+
+
