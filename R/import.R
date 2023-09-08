@@ -6,7 +6,7 @@ importUI <- function(id){
       title = 'Import Data', width = 12, solidHeader = TRUE, status = 'primary',
       sidebarLayout(
         sidebarPanel(
-          width=12, 
+          width=12,
           fileInput(ns('import'), "Choose CSV File", accept = ".csv")
         ),
         mainPanel(width=12,
@@ -31,7 +31,7 @@ importUI <- function(id){
             column(
               width=2,
               numericInput(
-                ns('nAbb'), 
+                ns('nAbb'),
                 label ='Abbreviation',
                 value=3, min=0, step=1
               )
@@ -59,7 +59,7 @@ importServer <- function(id, objF){
       if(!is.data.frame(objF$rawData)){
         showModal(modalDialog(
           title = "",
-          HTML("Please make sure that the uploaded file can be converted to an 
+          HTML("Please make sure that the uploaded file can be converted to an
                R dataframe!")
         ))
         return()
@@ -70,38 +70,12 @@ importServer <- function(id, objF){
         head(objF$rawData,3)
       })
     })
-    
+
     observeEvent(c(input$sjID, input$nDay, input$nBeep),{
       objF$sjID <- input$sjID
       objF$nDay <- input$nDay
       objF$nBeep <- input$nBeep
-      if(input$sjID!='' & input$nDay!='' & input$nBeep!=''){
-        x <- propperLevels(objF)
-        id <- x[[1]]
-        nD <- x[[2]]
-        flag <- x[[3]]
-        msg <- x[[4]]
-        if(!all(flag)){
-          showModal(modalDialog(
-            title = "",
-            HTML("Please make sure that for each subject every level of \"nDay\\nWeek\"
-                 has multiple \"nBeep\" items!. The following is the first problematic
-                 encounter in data.", "<br>",
-                 "Possible cause:", "<br>",
-                 "   Subject ID: ", sprintf("%s", id), "<br>",
-                 "   Day\\Week number: ", sprintf("%s", nD), "<br>",
-                 "   Beeps: ", msg, "<br>",
-                 "There might be further such problems!")
-          ))
-          if(!flag[1])
-            updateSelectizeInput(session,"nDay",  selected=list())
-          if(!flag[2])
-            updateSelectizeInput(session,"nBeep",  selected=list())
-        }else{
-          x <- setdiff(colnames(objF$rawData), c(objF$sjID, objF$nDay, objF$nBeep))
-          updateMenus(session, c("arList","exList"), choices=x)
-        }
-      }
+      testLevels(input, session, objF)
     })
 
     observeEvent(input$nAbb,{

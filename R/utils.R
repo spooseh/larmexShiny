@@ -1,9 +1,45 @@
+testLevels <- function(input, session, objF){
+  if(input$sjID!='' & input$nDay!='' & input$nBeep!=''){
+    x <- propperLevels(objF)
+    nSj <- x[[1]]
+    id <- x[[2]]
+    msgD <- x[[3]]
+    msgB <- x[[4]]
+    if(msgD != '' | msgB != ''){
+      shiny::showModal(shiny::modalDialog(
+        title = "",
+        shiny::HTML("The data lacks a consistent multilevel structure across all
+        subjects. Please ensure that each subject has multiple
+        \"nDay/nWeek.\" in an ascending order. Each \"nDay/nWeek.\" must also
+        have multiple \"nBeep\" items in an ascending order.", "<br>",
+        "The following information might help to identify the problem.", "<br>",
+        "   Number of subjects: ", sprintf("%s", nSj), "<br>",
+        "First problematic instance:", "<br>",
+        "   Subject ID: ", sprintf("%s", id), "<br>",
+        "   Day\\Week: ", msgD, "<br>",
+        "   Beeps: ", msgB, "<br>",
+        "Please exclude the problematic part from the dataset and then upload it
+        again!", "<br>",
+                    "There might be further such problems!")
+      ))
+      if(msgD != ''){
+        shiny::updateSelectizeInput(session,"nDay",  selected=list())
+        shiny::updateSelectizeInput(session,"nBeep",  selected=list())
+      }
+      if(msgB != '')
+        shiny::updateSelectizeInput(session,"nBeep",  selected=list())
+    }else{
+      x <- setdiff(colnames(objF$rawData), c(objF$sjID, objF$nDay, objF$nBeep))
+      updateMenus(session, c("arList","exList"), choices=x)
+    }
+  }
+}
 #####################################################Util
 # ch=list()
-selectMenu <- function(id, lab, choices=list(), mult=F, 
+selectMenu <- function(id, lab, choices=list(), mult=F,
                        opt=list(placeholder='Import data first')){
   selectizeInput(
-    id, 
+    id,
     label = lab,
     choices = choices,
     multiple = mult,
@@ -11,7 +47,7 @@ selectMenu <- function(id, lab, choices=list(), mult=F,
 }
 #####################################################Util
 # ch=list()
-updateMenus <- function(session, listID,   choices=list(), sel=list(), 
+updateMenus <- function(session, listID,   choices=list(), sel=list(),
                        opt=list(placeholder='Click to choose')){
   for(id in listID)
     updateSelectizeInput(session, id, choices=choices, selected=sel, options=opt)
@@ -57,5 +93,5 @@ is_formula <- function(x){
     },
     finally = {
     }
-  )    
+  )
 }
