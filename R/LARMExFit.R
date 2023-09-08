@@ -60,18 +60,21 @@ LARMExFit <- R6::R6Class(
 #'
 propperLevels <- function(self, nD=2, nB=2){
   id <- unique(self$rawData[ ,self$sjID])
-  flag <- c(T, T)
-  msg <- ''
-  msgDay  <- c(paste0("Less than ", nD, " days\\weeks"), "Not ascending days\\weeks")
-  msgBeep <- c(paste0("Less than ", nB, " beeps"), "Not ascending beeps")
+  nSj <- length(id)
+  msgD <- ''
+  msgB <- ''
+  msgDay  <- c(paste0("There must be at least ", nD, " distinct days/weeks"),
+               "Days/Weeks numbers must be in an ascending order")
+  msgBeep <- c(paste0("There must be at least ", nB, " distinct beeps"),
+               "Beep numbers must be in an ascending order")
   for(i in id){
     df <- self$rawData[self$rawData[ ,self$sjID]==i, c(self$nDay, self$nBeep)]
     day <- unique(df[ ,self$nDay])
-    lenDay <- length(day) < nD
+    numD <- length(day)
+    lenDay <- numD < nD
     ascDay <- all(diff(day) > 0)
     if(lenDay | !ascDay){
-      flag <- c(F, F)
-      msg <- msgDay[c(lenDay, !ascDay)]
+      msgD <- msgDay[c(lenDay, !ascDay)]
       break
     }
     for(j in day){
@@ -80,13 +83,12 @@ propperLevels <- function(self, nD=2, nB=2){
       ascBeep <- all(diff(beeps) > 0)
       if(lenBeep | !ascBeep){
         msg <- msgBeep[c(lenBeep, !ascBeep)]
-        flag[2] <- F
-        x <- list(i, j, flag, msg)
+        x <- list(nSj, i, msgD, msgB)
         return(x)
       }
     }
   }
-  x <- list(i, 0, flag, msg)
+  x <- list(nSj, i, msgD, msgB)
   return(x)
 }
 #######################################

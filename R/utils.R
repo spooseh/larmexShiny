@@ -2,25 +2,32 @@
 testLevels <- function(input, session, objF){
   if(input$sjID!='' & input$nDay!='' & input$nBeep!=''){
     x <- propperLevels(objF)
-    id <- x[[1]]
-    nD <- x[[2]]
-    flag <- x[[3]]
-    msg <- x[[4]]
-    if(!all(flag)){
+    nSj <- x[[1]]
+    id <- x[[2]]
+    msgD <- x[[3]]
+    msgB <- x[[4]]
+    if(msgD != '' | msgB != ''){
       shiny::showModal(shiny::modalDialog(
         title = "",
-        shiny::HTML("Please make sure that for each subject every level of \"nDay\\nWeek\"
-                 has multiple \"nBeep\" items!. The following is the first problematic
-                 encounter in data.", "<br>",
-                    "Possible cause:", "<br>",
-                    "   Subject ID: ", sprintf("%s", id), "<br>",
-                    "   Day\\Week number: ", sprintf("%s", nD), "<br>",
-                    "   Beeps: ", msg, "<br>",
-                    "There might be further such problems!")
+        shiny::HTML("The data does not have a proper multilevel structure for
+        all subjects. Please ensure that each subject has multiple
+        \"nDay/nWeek.\" in an ascending order. Each \"nDay/nWeek.\" must also
+        have multiple \"nBeep\" items in an ascending order.", "<br>",
+        "The following information might help to identify the problem.", "<br>",
+        "   Number of subjects: ", sprintf("%s", nSj), "<br>",
+        "First problematic instance:", "<br>",
+        "   Subject ID: ", sprintf("%s", id), "<br>",
+        "   Day\\Week: ", msgD, "<br>",
+        "   Beeps: ", msgB, "<br>",
+        "Please exclude the problematic part from the dataset and then upload it
+        again!", "<br>",
+        "There might be further such problems!")
       ))
-      if(!flag[1])
+      if(msgD != ''){
         shiny::updateSelectizeInput(session,"nDay",  selected=list())
-      if(!flag[2])
+        shiny::updateSelectizeInput(session,"nBeep",  selected=list())
+      }
+      if(msgB != '')
         shiny::updateSelectizeInput(session,"nBeep",  selected=list())
     }else{
       x <- setdiff(colnames(objF$rawData), c(objF$sjID, objF$nDay, objF$nBeep))
